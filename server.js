@@ -5,7 +5,7 @@ const { GoogleGenAI } = require('@google/genai');
 
 loadEnv();
 const PORT = Number(process.env.PORT || 3000);
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = __dirname;
 const MIME_TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml' };
 const requestLog = new Map();
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
