@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#070b19" />
+  <title>Hari AI | Your intelligent companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="logo"><i></i><i></i><i></i></span><span>HARI <b>AI</b></span></div>
+      <button class="new-chat" id="newChat"><span>+</span> New conversation</button>
+      <p class="section-title">Your space</p>
+      <nav><button class="history active">&#10022; A fresh start with Hari</button><button class="history">&#9672; Creative thinking</button><button class="history">&#9672; Learn something new</button></nav>
+      <div class="sidebar-footer"><div class="online"><span></span> System online</div><div class="user-card"><span class="user-avatar">H</span><span><b>Hari</b><small>Personal workspace</small></span><em>...</em></div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><button class="menu" id="menu" aria-label="Open menu">&#9776;</button><div class="model"><span class="tiny-logo">H</span><span>Hari AI</span><small>Online</small></div><button class="clear" id="clearChat" title="Clear chat">&#8635; <span>Clear</span></button></header>
+      <section class="chat" id="chat"><div class="welcome" id="welcome"><div class="hero-logo"><span></span><span></span><span></span></div><p class="kicker">Personal intelligence, thoughtfully made</p><h1>Namaste! &#128591;<br><em>Main Hari AI hoon.</em></h1><p class="intro">Aap mujhse Hindi, Hinglish ya English mein baat kar sakte ho.</p><div class="quick-prompts"><button data-prompt="Mere liye ek productive day plan karo"><span class="prompt-icon yellow">&#9728;</span><b>Plan my day</b><small>Ek calm, focused routine banao</small><strong>&rarr;</strong></button><button data-prompt="Mujhe ek creative side project idea do"><span class="prompt-icon purple">&#10024;</span><b>Brainstorm ideas</b><small>Curiosity ko momentum mein badlo</small><strong>&rarr;</strong></button><button data-prompt="Artificial intelligence ko simple language mein samjhao"><span class="prompt-icon blue">&#9672;</span><b>Learn something</b><small>Complex cheezon ko clear karo</small><strong>&rarr;</strong></button></div></div><div class="messages" id="messages"></div></section>
+      <footer class="composer-area"><form class="composer" id="form"><textarea id="input" rows="1" placeholder="Ask Hari AI anything..." aria-label="Message Hari AI"></textarea><button class="send" type="submit" aria-label="Send message">&#8593;</button></form><div class="composer-note"><span>Hari AI is here to help</span><span>Enter to send <b>&middot;</b> Shift + Enter for new line</span></div></footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

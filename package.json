@@ -1,0 +1,17 @@
+{
+  "name": "hari-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A secure, futuristic AI chatbot for Hari",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@google/genai": "^2.19.0"
+  }
+}
