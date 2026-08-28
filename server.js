@@ -6,13 +6,10 @@ const { GoogleGenAI } = require('@google/genai');
 loadEnv();
 
 const PORT = Number(process.env.PORT || 3000);
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = __dirname;
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'openrouter/free';
-
-console.log('HARI AI MODEL:', GEMINI_MODEL);
-console.log('OPENROUTER MODEL:', OPENROUTER_MODEL);
 
 function loadEnv() {
   const envPath = path.join(__dirname, '.env');
@@ -32,8 +29,7 @@ function loadEnv() {
 
 function sendJSON(res, status, data) {
   res.writeHead(status, {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store'
+    'Content-Type': 'application/json; charset=utf-8'
   });
 
   res.end(JSON.stringify(data));
@@ -45,10 +41,6 @@ function readBody(req) {
 
     req.on('data', chunk => {
       body += chunk;
-
-      if (body.length > 100000) {
-        req.destroy();
-      }
     });
 
     req.on('end', () => resolve(body));
@@ -72,8 +64,7 @@ async function askGemini(messages) {
     model: GEMINI_MODEL,
     contents: messages,
     config: {
-      systemInstruction: SYSTEM_PROMPT,
-      temperature: 0.7
+      systemInstruction: SYSTEM_PROMPT
     }
   });
 
@@ -137,13 +128,7 @@ async function askOpenRouter(messages) {
     );
   }
 
-  return (
-    data &&
-    data.choices &&
-    data.choices[0] &&
-    data.choices[0].message &&
-    data.choices[0].message.content
-  ) || '';
+  return data.choices?.[0]?.message?.content || '';
 }
 
 async function chat(req, res) {
@@ -151,7 +136,7 @@ async function chat(req, res) {
     const body = await readBody(req);
     const payload = JSON.parse(body);
 
-    if (!Array.isArray(payload.messages) || payload.messages.length === 0) {
+    if (!Array.isArray(payload.messages)) {
       return sendJSON(res, 400, {
         error: 'A message history is required.'
       });
@@ -184,8 +169,8 @@ async function chat(req, res) {
         provider: 'gemini'
       });
 
-    } catch (geminiError) {
-      console.log('Gemini failed:', geminiError.message);
+    } catch (error) {
+      console.log('Gemini failed:', error.message);
       console.log('Switching to OpenRouter...');
     }
 
@@ -199,12 +184,11 @@ async function chat(req, res) {
         provider: 'openrouter'
       });
 
-    } catch (openRouterError) {
-      console.log('OpenRouter failed:', openRouterError.message);
+    } catch (error) {
+      console.log('OpenRouter failed:', error.message);
 
       return sendJSON(res, 503, {
-        error: 'Gemini aur OpenRouter dono available nahi hain.',
-        details: openRouterError.message
+        error: 'Gemini aur OpenRouter dono available nahi hain.'
       });
     }
 
@@ -217,22 +201,17 @@ async function chat(req, res) {
   }
 }
 
-function serveStatic(req, res) {
-  const requested = decodeURIComponent(req.url.split('?')[0]);
+function serveFile(req, res) {
+  let requestPath = decodeURIComponent(req.url.split('?')[0]);
 
-  const filePath = path.resolve(
-    PUBLIC_DIR,
-    requested === '/' ? 'index.html' : '.' + requested
-  );
-
-  if (
-    filePath !== PUBLIC_DIR &&
-    !filePath.startsWith(PUBLIC_DIR + path.sep)
-  ) {
-    return sendJSON(res, 403, {
-      error: 'Forbidden'
-    });
+  if (requestPath === '/') {
+    requestPath = '/index.html';
   }
+
+  const filePath = path.join(
+    PUBLIC_DIR,
+    requestPath.replace(/^\/+/, '')
+  );
 
   fs.readFile(filePath, (error, file) => {
     if (error) {
@@ -248,11 +227,16 @@ function serveStatic(req, res) {
       '.js': 'text/javascript; charset=utf-8',
       '.css': 'text/css; charset=utf-8',
       '.json': 'application/json; charset=utf-8',
-      '.svg': 'image/svg+xml'
+      '.svg': 'image/svg+xml',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.ico': 'image/x-icon'
     };
 
     res.writeHead(200, {
-      'Content-Type': mimeTypes[ext] || 'application/octet-stream'
+      'Content-Type':
+        mimeTypes[ext] || 'application/octet-stream'
     });
 
     res.end(file);
@@ -268,7 +252,7 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.method === 'GET') {
-    return serveStatic(req, res);
+    return serveFile(req, res);
   }
 
   return sendJSON(res, 405, {
